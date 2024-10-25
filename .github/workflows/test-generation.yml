@@ -27,8 +27,17 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.8'
-      
+
       - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git curl
+          curl -s https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture)] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          sudo apt update
+          sudo apt install gh
+      
+      - name: Install dependencies Part 2
         run: |
           python -m pip install --upgrade pip
           pip install requests pytest
