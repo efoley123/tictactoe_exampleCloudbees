@@ -24,3 +24,7 @@ def undo_move(self):
         self.current_player = player  # Restore the player who made the last move
         self.current_winner = None  # Reset winner in case it was set
         return True, f"Move undone. It's {self.current_player}'s turn again."
+
+def make_move():
+    game3 = TicTacToe()
+    assert game3.make_move(0, 'X') == True
