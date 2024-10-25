@@ -28,3 +28,6 @@ def undo_move(self):
 def make_move():
     game3 = TicTacToe()
     assert game3.make_move(0, 'X') == True
+
+def new_game():
+     game4 = TicTacToe()
