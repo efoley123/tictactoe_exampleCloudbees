@@ -13,6 +13,7 @@ def test_tic_tac_toe2():
     game2 = TicTacToe()
     assert game2.make_move(0, 'X') == True
     assert game2.make_move(1, 'O') == True
+    assert game2.make_move(1, 'O') == True
     assert game2.current_winner is None
 
 def undo_move(self):
