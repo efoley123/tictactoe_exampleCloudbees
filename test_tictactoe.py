@@ -1,4 +1,4 @@
-from tictactoe import TicTacToe
+from tictactoegame import TicTacToe
 
 def test_tic_tac_toe():
     game = TicTacToe()
