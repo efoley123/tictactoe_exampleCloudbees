@@ -116,6 +116,7 @@ class TicTacToe:
             print(f"Game loaded from {filename}.")
         except FileNotFoundError:
             print(f"No saved game found at {filename}.")
+
     def game_summary(self):
         """Prints a summary of the current game status, including board state, move history, scores, and winner status."""
         print("\nGame Summary:")
@@ -129,6 +130,32 @@ class TicTacToe:
         else:
             print("No winner yet.")
         print("\n")
+
+    def auto_play(self):
+        """Automatically play a game between two computer players until completion."""
+        print("Starting auto-play mode...")
+        while True:
+            self.print_board()
+            available = self.available_moves()
+            if not available:
+                print("It's a tie!")
+                self.scores['Draws'] += 1
+                break
+            move = random.choice(available)
+            success, msg = self.make_move(move)
+            print(f"Player {self.current_player} moves to square {move}.")
+            print(msg)
+            if self.current_winner:
+                print(f"Game Over - {self.current_winner} wins!")
+                self.print_board()
+                break
+            elif self.is_board_full():
+                print("It's a tie!")
+                self.scores['Draws'] += 1
+                self.print_board()
+                break
+        print("Auto-play complete.")
+        self.print_scores()
 
 def play_game():
     game = TicTacToe()
