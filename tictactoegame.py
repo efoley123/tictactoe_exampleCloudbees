@@ -116,6 +116,19 @@ class TicTacToe:
             print(f"Game loaded from {filename}.")
         except FileNotFoundError:
             print(f"No saved game found at {filename}.")
+    def game_summary(self):
+        """Prints a summary of the current game status, including board state, move history, scores, and winner status."""
+        print("\nGame Summary:")
+        print("Board:")
+        self.print_board()
+        print(f"Current Player: {self.current_player}")
+        print(f"Move History: {self.move_history}")
+        print(f"Scores - X: {self.scores['X']}, O: {self.scores['O']}, Draws: {self.scores['Draws']}")
+        if self.current_winner:
+            print(f"Winner: {self.current_winner}")
+        else:
+            print("No winner yet.")
+        print("\n")
 
 def play_game():
     game = TicTacToe()
