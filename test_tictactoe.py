@@ -7,6 +7,7 @@ def test_tic_tac_toe():
     assert game.current_winner is None
     game.make_move(1, 'X')
     game.make_move(2, 'X')
+    game.make_move(3, 'X')
     assert game.current_winner == 'X'  # X wins
 
 def test_tic_tac_toe2():
