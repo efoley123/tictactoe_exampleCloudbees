@@ -5,6 +5,7 @@ on:
       - main
       - "feature/*"
       - eleanor-br
+      - launchable-connection
     paths:
       - '**.py'
       - '**.js'
@@ -126,3 +127,26 @@ jobs:
             Generated using OpenAI model: ${{ env.OPENAI_MODEL }}
           destination_branch: "main"
           source_branch: ${{ env.BRANCH_NAME }}
+
+  launchable-connection-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Python Test
+        run: --junit-xml=test-results/results.xml  # report.xml
+
+      - name: Verify Launchable Results #not sure if its the right order or not
+        run: launchable verify || true  # Add this step for verification
+
+
+
+      - name: Record test results to Launchable workspace
+        uses: launchableinc/record-build-and-test-results-action@v1.0.0
+        with:
+          test_runner: pytest
+          report_path: './test-results/'
+        if: always()
+        env:
+          LAUNCHABLE_TOKEN: ${{ secrets.LAUNCHABLE_TOKEN }}
