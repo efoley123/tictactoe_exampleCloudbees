@@ -48,10 +48,10 @@ jobs:
             exit 0
           fi
 
-      #- name: Run tests and generate coverage report
-      #  if: env.changed_files != ''
-      #  run: |
-      #    pytest --cov=src --cov-report=xml tests/python/    # Generates the coverage report in XML format
+      - name: Run tests and generate coverage report
+        if: env.changed_files != ''
+        run: |
+          pytest --cov=src --cov-report=xml tests/python/    # Generates the coverage report in XML format
       
       
       - name: Run test generation script
