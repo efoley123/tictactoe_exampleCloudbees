@@ -85,3 +85,6 @@ class TestMain(unittest.TestCase):
         tic_tac_toe.print_scores()
         captured = capsys.readouterr()
         assert captured.out  # Check if scores are printed"""
+    
+if __name__ == "__main__":
+    unittest.main()

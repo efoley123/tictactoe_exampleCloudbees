@@ -48,12 +48,18 @@ jobs:
             exit 0
           fi
 
-      - name: Run tests and generate coverage report
+      - name: Create coverage_files
         if: env.changed_files != ''
         run: |
-          pytest --cov=src --cov-report=xml tests/python/    # Generates the coverage report in XML format
-      
-      
+          coverage_files=$(git diff --name-only HEAD^ HEAD | grep -E '\.(py|js|ts|java|cpp|cs)$' || true)
+          if [ -n "$coverage_files" ]; then
+            echo "coverage_files=$coverage_files" >> $GITHUB_ENV
+          
+      - name: Adding coverage files
+        if: env.changed_files != ''
+        run: |
+            pytest --cov=tictactoegame --cov-report=term-missing "${{ env.coverage_files }}"    # Generates the coverage report in XML format
+
       - name: Run test generation script
         if: env.changed_files != ''
         run: python generate_tests.py "${{ env.changed_files }}"
@@ -100,6 +106,10 @@ jobs:
             Generated test cases for the following files:
             ```
             ${{ env.changed_files }}
+            ```
+            Here is a coverage report to help:
+            ```
+            "${{ env.coverage_files }}"
             ```
             
             Please review these generated tests for:
