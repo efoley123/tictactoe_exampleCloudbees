@@ -136,7 +136,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Python Test
-        run: --junit-xml=test-results/results.xml  # report.xml
+        run: pytest --junit-xml=test-results/results.xml  # report.xml
 
       - name: Verify Launchable Results #not sure if its the right order or not
         run: launchable verify || true  # Add this step for verification
