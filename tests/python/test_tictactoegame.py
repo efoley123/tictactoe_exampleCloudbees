@@ -56,6 +56,10 @@ class TestMain(unittest.TestCase):
         #assert game5.validate_move(-1) == (False, "Move must be between 0 and 8")
         assert game5.validate_move(0) == (True, "Valid move")
 
+
+    def test_should_fail(self):
+        game6=TicTacToe()
+        assert game6.validate_move(10) == (True, "Valid move") #this is false
     """def test_print_board(capsys, tic_tac_toe):
         tic_tac_toe.print_board()
         captured = capsys.readouterr()
