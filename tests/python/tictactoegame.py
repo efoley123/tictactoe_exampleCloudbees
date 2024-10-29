@@ -67,6 +67,12 @@ class TicTacToe:
 
     def is_board_full(self):
         return ' ' not in self.board
+    
+    def switch_starting_player(self):
+        """Switch the starting player between 'X' and 'O'."""
+        self.current_player = 'O' if self.current_player == 'X' else 'X'
+        print(f"The starting player is now {self.current_player}.")
+
 
     def reset_game(self):
         self.board = [' ' for _ in range(self.board_size * self.board_size)]
