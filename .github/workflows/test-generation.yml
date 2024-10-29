@@ -5,6 +5,7 @@ on:
       - main
       - "feature/*"
       - eleanor-br
+      - newAshley-br
     paths:
       - '**.py'
       - '**.js'
@@ -62,7 +63,7 @@ jobs:
       - name: Adding coverage files
         if: env.changed_files != ''
         run: |
-            pytest --cov=tictactoegame --cov-report=term-missing "${{ env.coverage_files }}"    # Generates the coverage report in XML format
+            pytest --cov=tictactoegame --cov-report=term-missing "tests/python/test_tictactoegame.py"    # Generates the coverage report in XML format
             echo "${{ env.coverage_files }}"
 
       - name: Run test generation script
