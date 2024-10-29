@@ -55,10 +55,10 @@ class TicTacToe:
         if check_line(row) or check_line(col):
             return True
         if square % (self.board_size + 1) == 0:  # Check diagonal
-            if check_line([self.board[i] for i in range(0, self.board_size*self.board_size, self.board_size + 1)]):
+            if check_line([self.board[i] for i in range(0, self.board_size*self.board_size, self.board_size+1)]):
                 return True
         if square % (self.board_size - 1) == 0:  # Check anti-diagonal
-            if check_line([self.board[i] for i in range(self.board_size - 1, self.board_size*self.board_size - 1, self.board_size - 1)]):
+            if check_line([self.board[i] for i in range(self.board_size-1, self.board_size*self.board_size-1, self.board_size-1)]):
                 return True
         return False
 
@@ -67,7 +67,7 @@ class TicTacToe:
 
     def is_board_full(self):
         return ' ' not in self.board
-
+    
     def switch_starting_player(self):
         """Switch the starting player between 'X' and 'O'."""
         self.current_player = 'O' if self.current_player == 'X' else 'X'
@@ -95,9 +95,8 @@ class TicTacToe:
             suggestion = random.choice(moves)
             print(f"Suggested move for {self.current_player}: {suggestion}")
             return suggestion
-        print("No available moves.")
         return None
-
+    
     def get_remaining_moves_count(self):
         """Return the number of moves left on the board."""
         remaining_moves = self.board.count(' ')
@@ -143,6 +142,14 @@ class TicTacToe:
         except FileNotFoundError:
             print(f"No saved game found at {filename}.")
 
+    def change_player(self):
+        """Change the current player manually."""
+        if self.current_player == 'X':
+            self.current_player = 'O'
+        else:
+            self.current_player = 'X'
+        print(f"The current player is now {self.current_player}.")
+
 def play_game():
     game = TicTacToe()
     print("New game :)")
@@ -152,7 +159,8 @@ def play_game():
     print("Enter -3 to get a move suggestion.")
     print("Enter -4 to save the game.")
     print("Enter -5 to load a saved game.")
-    
+    print("Enter -6 to change the current player.")  # New command
+
     while True:
         game.print_board()
         try:
@@ -172,6 +180,9 @@ def play_game():
                 continue
             elif square == -5:  # Load a saved game
                 game.load_game()
+                continue
+            elif square == -6:  # Change current player
+                game.change_player()
                 continue
             
             success, msg = game.make_move(square)

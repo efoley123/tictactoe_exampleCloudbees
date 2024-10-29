@@ -49,6 +49,9 @@ jobs:
             exit 0
           fi
 
+      - name: Install libxml2-utils
+        run: sudo apt-get install -y libxml2-utils
+
       - name: Create coverage report
         if: env.changed_files != ''
         run: |
