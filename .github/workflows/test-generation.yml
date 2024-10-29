@@ -53,8 +53,10 @@ jobs:
       - name: Adding coverage files
         if: env.changed_files != ''
         run: |
-            coverage report -m > coverage.txt # Generates the coverage report in XML format
-            coverage_files=$(<coverage.txt)
+            pytest --cov=tictactoegame --cov-report=xml:coverage.xml "${{ env.coverage_files }}" # Generates the coverage report in XML format
+            coverage_files=$(cat coverage.xml)
+            #coverage report -m > coverage.txt 
+            #coverage_files=$(<coverage.txt)
             if [ -n "$coverage_files" ]; then
               echo "coverage_files=$coverage_files" >> $GITHUB_ENV
               echo "${{ env.coverage_files }}"
