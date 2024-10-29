@@ -56,7 +56,7 @@ jobs:
         if: env.changed_files != ''
         run: |
           # Generate coverage report in XML format
-          pytest --cov=tictactoegame --cov-report=xml:coverage.xml "tests/python/test_tictactoegame.py"  # Generates the coverage report in XML format
+          pytest --cov=tictactoegame --cov-report=xml:tests/python/coverage.xml "tests/python/test_tictactoegame.py"
 
           # Read the coverage report into a variable
           coverage_report=$(cat coverage.xml)

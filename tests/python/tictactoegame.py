@@ -149,6 +149,11 @@ class TicTacToe:
         else:
             self.current_player = 'X'
         print(f"The current player is now {self.current_player}.")
+    
+    def current_player_symbol(self):
+        """Return the symbol of the current player."""
+        return self.current_player
+
 
 def play_game():
     game = TicTacToe()
@@ -163,6 +168,7 @@ def play_game():
 
     while True:
         game.print_board()
+        print(f"Current player symbol: {game.current_player_symbol()}")
         try:
             square = int(input(f"Turn for {game.current_player}. Move on which space? (0-{game.board_size * game.board_size - 1}): "))
             if square == -1:  # Reset the game
