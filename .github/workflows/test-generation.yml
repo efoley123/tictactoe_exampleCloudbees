@@ -53,7 +53,7 @@ jobs:
       - name: Adding coverage files
         if: env.changed_files != ''
         run: |
-            pytest --cov=tictactoegame --cov-report=xml:coverage.xml "${{ env.changed_files }}"
+            coverage_file=$(pytest --cov=tictactoegame --cov-report=term-missing "tests/python/test_tictactoegame.py" 2>&1)
             # Check if the XML report was created successfully
             if [ -f coverage.xml ]; then
               # Read the contents of the XML report into an environment variable
