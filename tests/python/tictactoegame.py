@@ -55,10 +55,10 @@ class TicTacToe:
         if check_line(row) or check_line(col):
             return True
         if square % (self.board_size + 1) == 0:  # Check diagonal
-            if check_line([self.board[i] for i in range(0, self.board_size*self.board_size, self.board_size+1)]):
+            if check_line([self.board[i] for i in range(0, self.board_size*self.board_size, self.board_size + 1)]):
                 return True
         if square % (self.board_size - 1) == 0:  # Check anti-diagonal
-            if check_line([self.board[i] for i in range(self.board_size-1, self.board_size*self.board_size-1, self.board_size-1)]):
+            if check_line([self.board[i] for i in range(self.board_size - 1, self.board_size*self.board_size - 1, self.board_size - 1)]):
                 return True
         return False
 
@@ -67,12 +67,11 @@ class TicTacToe:
 
     def is_board_full(self):
         return ' ' not in self.board
-    
+
     def switch_starting_player(self):
         """Switch the starting player between 'X' and 'O'."""
         self.current_player = 'O' if self.current_player == 'X' else 'X'
         print(f"The starting player is now {self.current_player}.")
-
 
     def reset_game(self):
         self.board = [' ' for _ in range(self.board_size * self.board_size)]
@@ -96,15 +95,15 @@ class TicTacToe:
             suggestion = random.choice(moves)
             print(f"Suggested move for {self.current_player}: {suggestion}")
             return suggestion
+        print("No available moves.")
         return None
-    
+
     def get_remaining_moves_count(self):
         """Return the number of moves left on the board."""
         remaining_moves = self.board.count(' ')
         print(f"Remaining moves: {remaining_moves}")
         return remaining_moves
 
-    
     def get_game_summary(self):
         """Return a summary of the current game status, including board state, current player, and scores."""
         board_lines = "\n".join(
@@ -118,7 +117,6 @@ class TicTacToe:
         )
         print(summary)
         return summary
-
 
     def save_game(self, filename="tictactoe_save.json"):
         """Save the current game state to a file."""
@@ -147,18 +145,19 @@ class TicTacToe:
 
 def play_game():
     game = TicTacToe()
-    print("new game :)")
+    print("New game :)")
     print("Welcome to Tic Tac Toe!")
     print("Enter -1 at any time to reset the game.")
     print("Enter -2 to undo the last move.")
     print("Enter -3 to get a move suggestion.")
     print("Enter -4 to save the game.")
     print("Enter -5 to load a saved game.")
+    
     while True:
         game.print_board()
         try:
-            square = int(input(f"Turn for {game.current_player}. Move on which space? (0-{game.board_size*game.board_size - 1}): "))
-            if square == -1:  # Check if the reset command is entered
+            square = int(input(f"Turn for {game.current_player}. Move on which space? (0-{game.board_size * game.board_size - 1}): "))
+            if square == -1:  # Reset the game
                 game.reset_game()
                 continue
             elif square == -2:  # Undo last move
@@ -174,6 +173,7 @@ def play_game():
             elif square == -5:  # Load a saved game
                 game.load_game()
                 continue
+            
             success, msg = game.make_move(square)
             print(msg)
             if success:
