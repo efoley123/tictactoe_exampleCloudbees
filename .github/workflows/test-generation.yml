@@ -5,6 +5,7 @@ on:
       - main
       - "feature/*"
       - eleanor-br
+      - newAshley-br
     paths:
       - '**.py'
       - '**.js'
@@ -40,10 +41,7 @@ jobs:
         id: files
         run: |
           changed_files=$(git diff --name-only HEAD^ HEAD | grep -E '\.(py|js|ts|java|cpp|cs)$' || true)
-          changed_files=$(git diff --name-only HEAD^ HEAD | grep -E '\.(py|js|ts|java|cpp|cs)$' || true)
           if [ -n "$changed_files" ]; then
-            # Replace newlines with spaces or commas
-            changed_files=$(echo "$changed_files" | tr '\n' ' ')
             echo "changed_files=$changed_files" >> $GITHUB_ENV
             echo "Found changed files: $changed_files"
           else
@@ -51,22 +49,18 @@ jobs:
             exit 0
           fi
 
-      - name: Create coverage_files
-        if: env.changed_files != ''
-        run: |
-          coverage_files=$(git diff --name-only HEAD^ HEAD | grep -E '\.(py|js|ts|java|cpp|cs)$' || true)
-          if [ -n "$coverage_files" ]; then
-            echo "coverage_files=$coverage_files" >> $GITHUB_ENV
-          else
-            echo "did not create coverage_files"
-            exit 0
-          fi
           
       - name: Adding coverage files
         if: env.changed_files != ''
         run: |
-            pytest --cov=tictactoegame --cov-report=term-missing "${{ env.coverage_files }}"    # Generates the coverage report in XML format
+            coverage_files=$(pytest --cov=tictactoegame --cov-report=term-missing)    # Generates the coverage report in XML format
             echo "${{ env.coverage_files }}"
+            if [ -n "$coverage_files" ]; then
+              echo "coverage_files=$coverage_files" >> $GITHUB_ENV
+            else
+              echo "did not create coverage_files"
+              exit 0
+            fi
 
       - name: Run test generation script
         if: env.changed_files != ''
