@@ -53,16 +53,18 @@ jobs:
       - name: Adding coverage files
         if: env.changed_files != ''
         run: |
-            coverage_file=$(pytest --cov=tictactoegame --cov-report=term-missing "${{ env.changed_files }}") # Generates the coverage report in XML format
-            #coverage_file=$(cat coverage.xml)
-            #coverage report -m > coverage.txt 
-            #coverage_file=$(<coverage.txt)
-            if [ -n "$coverage_file" ]; then
-              echo "coverage_file=$coverage_file" >> $GITHUB_ENV
-              echo coverage_file
+            pytest --cov=tictactoegame --cov-report=xml:coverage.xml "${{ env.changed_files }}"
+            # Check if the XML report was created successfully
+            if [ -f coverage.xml ]; then
+              # Read the contents of the XML report into an environment variable
+              coverage_file=$(cat coverage.xml)
+              echo "coverage_file<<EOF" >> $GITHUB_ENV
+              echo "$coverage_file" >> $GITHUB_ENV
+              echo "EOF" >> $GITHUB_ENV
+              echo "Coverage report saved to environment variable."
             else
-              echo "did not create coverage report"
-              exit 0
+              echo "Did not create coverage report"
+              exit 1
             fi
 
       - name: Run test generation script
