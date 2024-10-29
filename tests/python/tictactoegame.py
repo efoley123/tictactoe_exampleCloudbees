@@ -98,6 +98,13 @@ class TicTacToe:
             return suggestion
         return None
     
+    def get_remaining_moves_count(self):
+        """Return the number of moves left on the board."""
+        remaining_moves = self.board.count(' ')
+        print(f"Remaining moves: {remaining_moves}")
+        return remaining_moves
+
+    
     def get_game_summary(self):
         """Return a summary of the current game status, including board state, current player, and scores."""
         board_lines = "\n".join(
