@@ -58,7 +58,7 @@ jobs:
             #coverage report -m > coverage.txt 
             #coverage_file=$(<coverage.txt)
             if [ -n "$coverage_file" ]; then
-              echo "changed_file=$changed_file" >> $GITHUB_ENV
+              echo "coverage_file=$coverage_file" >> $GITHUB_ENV
               echo "${{ env.coverage_file }}"
             else
               echo "did not create coverage report"
