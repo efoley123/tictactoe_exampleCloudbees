@@ -97,6 +97,21 @@ class TicTacToe:
             print(f"Suggested move for {self.current_player}: {suggestion}")
             return suggestion
         return None
+    
+    def get_game_summary(self):
+        """Return a summary of the current game status, including board state, current player, and scores."""
+        board_lines = "\n".join(
+            "| " + " | ".join(self.board[i:i + self.board_size]) + " |"
+            for i in range(0, self.board_size * self.board_size, self.board_size)
+        )
+        summary = (
+            f"Current Board:\n{board_lines}\n"
+            f"Current Player: {self.current_player}\n"
+            f"Scores: X - {self.scores['X']}, O - {self.scores['O']}, Draws - {self.scores['Draws']}"
+        )
+        print(summary)
+        return summary
+
 
     def save_game(self, filename="tictactoe_save.json"):
         """Save the current game state to a file."""
