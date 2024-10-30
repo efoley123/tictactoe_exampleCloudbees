@@ -33,7 +33,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install requests pytest pytest-cov
-          pip install coverage
       
       - name: Create tests directory
         run: mkdir -p tests
@@ -49,23 +48,28 @@ jobs:
             echo "No relevant source files changed"
             exit 0
           fi
-          
-      - name: Adding coverage files
+
+      - name: Install libxml2-utils
+        run: sudo apt-get install -y libxml2-utils
+
+      - name: Create coverage report
         if: env.changed_files != ''
         run: |
-            coverage_file=$(pytest --cov=tictactoegame --cov-report=term-missing "$changed_files" 2>&1)
-            # Check if the XML report was created successfully
-            if [ -n "$coverage_files" ]; then
-              # Read the contents of the  coverage file into an environment variable
-              echo "coverage_file<<EOF" >> $GITHUB_ENV
-              echo "$coverage_file" >> $GITHUB_ENV
-              echo "EOF" >> $GITHUB_ENV
-              echo "Coverage report saved to environment variable."
-            else
-              echo "Did not create coverage report"
-              exit 1
-            fi
-
+          # Generate coverage report in XML format
+          pytest --cov=tictactoegame --cov-report=xml:tests/python/coverage.xml "tests/python/test_tictactoegame.py"
+          # Read the coverage report into a variable
+          if [ -f tests/python/coverage.xml ]; then
+            coverage_report=$(< tests/python/coverage.xml)
+            echo "COVERAGE_REPORT<<EOF" >> $GITHUB_ENV
+            echo "$coverage_report" >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+            # Extract coverage files from the report (assuming XML format)
+            coverage_files=$(xmllint --xpath '//file/@name' tests/python/coverage.xml | tr ' ' '\n' | grep -E '\.(py|js|ts|java|cpp|cs)$')
+            echo "coverage_files=$coverage_files" >> $GITHUB_ENV
+          else 
+            echo "failed if statement"
+            exit 1
+          fi
       - name: Run test generation script
         if: env.changed_files != ''
         run: python generate_tests.py "${{ env.changed_files }}"
@@ -115,7 +119,7 @@ jobs:
             ```
             Here is a coverage report to help:
             ```
-            "${{ env.coverage_files }}"
+            ${{ env.COVERAGE_REPORT }}
             ```
             
             Please review these generated tests for:
