@@ -67,7 +67,7 @@ jobs:
             #coverage_files=$(xmllint --xpath '//class/@filename' tests/python/coverage.xml | tr ' ' '\n')
             echo "coverage_files=$coverage_files" >> $GITHUB_ENV
             echo "hi"
-            echo coverage_files
+            echo "Contents of coverage_files: $coverage_files"
             echo "hi"
           else 
             echo "failed if statement"
