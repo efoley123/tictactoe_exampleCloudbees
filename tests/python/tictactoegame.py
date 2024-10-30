@@ -20,6 +20,12 @@ class TicTacToe:
         if self.board[square] != ' ':
             return False, "Square already occupied"
         return True, "Valid move"
+    
+    def swap_players(self):
+        """Switch the starting player for the next game."""
+        self.current_player = 'O' if self.current_player == 'X' else 'X'
+        print(f"Starting player has been swapped! {self.current_player} will go first.")
+
 
     def make_move(self, square):
         valid, message = self.validate_move(square)

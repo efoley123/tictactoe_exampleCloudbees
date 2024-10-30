@@ -59,7 +59,7 @@ jobs:
           pytest --cov=tictactoegame --cov-report=xml:tests/python/coverage.xml "tests/python/test_tictactoegame.py"
 
           # Read the coverage report into a variable
-          if [ -f tests/python/coverage.xml]; then
+          if [ -f tests/python/coverage.xml ]; then
             coverage_report=$(< tests/python/coverage.xml)
             echo "COVERAGE_REPORT<<EOF" >> $GITHUB_ENV
             echo "$coverage_report" >> $GITHUB_ENV
