@@ -73,7 +73,7 @@ jobs:
       - name: Commit and push changes
         if: env.changed_files != ''
         run: |
-          echo "Git status output:"
+          echo "Git status --porcelain output:"
           git status --porcelain
           if [ -n "$(git status --porcelain)" ]; then
             git checkout -b ${{ env.BRANCH_NAME }}
