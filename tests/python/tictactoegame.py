@@ -165,7 +165,7 @@ def play_game():
     print("Enter -7 to see remaining moves.")
     while True:
         game.print_board()
-        print(f"Current player symbol: {game.current_player_symbol()}")  # Display current player symbol
+        #print(f"Current player symbol: {game.current_player_symbol()}")  # Display current player symbol
         try:
             square = int(input(f"Turn for {game.current_player}. Move on which space? (0-{game.board_size*game.board_size - 1}): "))
             if square == -1:

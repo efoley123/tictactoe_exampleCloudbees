@@ -67,7 +67,9 @@ jobs:
             exit 1
           fi
 
-          echo ${{ env.COVERAGE_REPORT }}
+      - name: Verify coverage report
+        if: env.changed_files != ''
+        run: echo "$COVERAGE_REPORT"
 
       - name: Run test generation script
         if: env.changed_files != ''
