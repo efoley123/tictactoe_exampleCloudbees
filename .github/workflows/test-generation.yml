@@ -5,6 +5,7 @@ on:
       - main
       - "feature/*"
       - eleanor-br
+      
     paths:
       - '**.py'
       - '**.js'
@@ -28,10 +29,10 @@ jobs:
         with:
           python-version: '3.8'
       
-      - name: Install dependencies Part 2
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests pytest pytest-cov
+          pip install requests pytest
       
       - name: Create tests directory
         run: mkdir -p tests
@@ -47,24 +48,7 @@ jobs:
             echo "No relevant source files changed"
             exit 0
           fi
-
-      - name: Create coverage_files
-        if: env.changed_files != ''
-        run: |
-          coverage_files=$(git diff --name-only HEAD^ HEAD | grep -E '\.(py|js|ts|java|cpp|cs)$' || true)
-          if [ -n "$coverage_files" ]; then
-            echo "coverage_files=$coverage_files" >> $GITHUB_ENV
-          else
-            echo "did not create coverage_files"
-            exit 0
-          fi
-          
-      - name: Adding coverage files
-        if: env.changed_files != ''
-        run: |
-            pytest --cov=tictactoegame --cov-report=term-missing "${{ env.coverage_files }}"    # Generates the coverage report in XML format
-            echo "${{ env.coverage_files }}"
-
+      
       - name: Run test generation script
         if: env.changed_files != ''
         run: python generate_tests.py "${{ env.changed_files }}"
@@ -111,10 +95,6 @@ jobs:
             Generated test cases for the following files:
             ```
             ${{ env.changed_files }}
-            ```
-            Here is a coverage report to help:
-            ```
-            "${{ env.coverage_files }}"
             ```
             
             Please review these generated tests for:
