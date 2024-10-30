@@ -61,8 +61,8 @@ jobs:
           if [ -f tests/python/coverage.xml ]; then
             #coverage_files=$(< tests/python/coverage.xml)
             echo "coverage_files<<EOF" >> $GITHUB_ENV
-            #echo "$coverage_files" >> $GITHUB_ENV
-            #echo "EOF" >> $GITHUB_ENV
+            echo "$coverage_files" >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
             # Extract coverage files from the report (assuming XML format)
             #coverage_files=$(xmllint --xpath '//class/@filename' tests/python/coverage.xml | tr ' ' '\n')
             #echo "coverage_files=$coverage_files" >> $GITHUB_ENV
