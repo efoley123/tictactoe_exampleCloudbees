@@ -43,7 +43,7 @@ jobs:
           changed_files=$(git diff --name-only HEAD^ HEAD | grep -E '\.(py|js|ts|java|cpp|cs)$' || true)
           if [ -n "$changed_files" ]; then
             #echo "changed_files=$changed_files" >> $GITHUB_ENV
-            changed_files=$(echo "$changed_files" | tr '\n' ',' | sed 's/,$//') # Remove trailing comma
+            changed_files=$(echo "$changed_files" | tr '\n' ',' | sed 's/,$//') # Remove trailing comma, allows 2 files now in here
             echo "changed_files=$changed_files" >> $GITHUB_ENV
             echo "Found changed files: $changed_files"
           else
@@ -69,7 +69,7 @@ jobs:
           fi
       - name: Verify coverage report
         if: env.changed_files != ''
-        run: echo "$COVERAGE_REPORT"
+        run: echo "${{ env.COVERAGE_REPORT }}"
 
       - name: Run test generation script
         if: env.changed_files != ''
@@ -120,7 +120,7 @@ jobs:
             ```
             Here is a coverage report to help:
             ```
-            "$COVERAGE_REPORT"
+            ${{ env.COVERAGE_REPORT }}
             ```
             
             Please review these generated tests for:
