@@ -10,6 +10,9 @@ class TicTacToe:
         self.scores = {'X': 0, 'O': 0, 'Draws': 0}
         self.current_player = 'X'
 
+    def players(self): #added this function here
+        return self.current_player
+
     def print_board(self):
         for row in range(self.board_size):
             print('| ' + ' | '.join(self.board[row*self.board_size:(row+1)*self.board_size]) + ' |')
