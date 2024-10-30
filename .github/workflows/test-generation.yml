@@ -60,14 +60,14 @@ jobs:
           # Read the coverage report into a variable
           if [ -f tests/python/coverage.xml ]; then
             coverage_files=$(< tests/python/coverage.xml)
-            #echo "COVERAGE_REPORT<<EOF" >> $GITHUB_ENV
-            #echo "$coverage_report" >> $GITHUB_ENV
+            echo "COVERAGE_REPORT<<EOF" >> $GITHUB_ENV
+            echo "$coverage_report" >> $GITHUB_ENV
             #echo "EOF" >> $GITHUB_ENV
             # Extract coverage files from the report (assuming XML format)
             #coverage_files=$(xmllint --xpath '//class/@filename' tests/python/coverage.xml | tr ' ' '\n')
-            echo "coverage_files=$coverage_files" >> $GITHUB_ENV
+            #echo "coverage_files=$coverage_files" >> $GITHUB_ENV
             echo "hi"
-            echo "Contents of coverage_files: $coverage_files"
+            echo ${{ env.COVERAGE_FILES }}
             echo "hi"
           else 
             echo "failed if statement"
