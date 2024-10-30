@@ -128,7 +128,6 @@ class TicTacToe:
 
 def play_game():
     game = TicTacToe()
-    print("hiii")
     print("Welcome to Tic Tac Toe!")
     print("Enter -1 at any time to reset the game.")
     print("Enter -2 to undo the last move.")
