@@ -64,7 +64,7 @@ jobs:
             echo "$coverage_report" >> $GITHUB_ENV
             echo "EOF" >> $GITHUB_ENV
             # Extract coverage files from the report (assuming XML format)
-            coverage_files=$(xmllint --xpath '//file/@name' tests/python/coverage.xml | tr ' ' '\n' | grep -E '\.(py|js|ts|java|cpp|cs)$')
+            coverage_files=$(xmllint --xpath '//class/@filename' tests/python/coverage.xml | tr ' ' '\n')
             echo "coverage_files=$coverage_files" >> $GITHUB_ENV
           else 
             echo "failed if statement"
