@@ -48,31 +48,27 @@ jobs:
             echo "No relevant source files changed"
             exit 0
           fi
-
       - name: Install libxml2-utils
         run: sudo apt-get install -y libxml2-utils
 
       - name: Create coverage report
         if: env.changed_files != ''
         run: |
-          # Generate coverage report in XML format
-          pytest --cov=tictactoegame --cov-report=xml:tests/python/coverage.xml "tests/python/test_tictactoegame.py"
-          # Read the coverage report into a variable
+          pytest --cov=tictactoegame --cov-report=xml:tests/python/coverage.xml tests/python/test_tictactoegame.py
           if [ -f tests/python/coverage.xml ]; then
-            #coverage_files=$(< tests/python/coverage.xml)
-            echo "coverage_files<<EOF" >> $GITHUB_ENV
-            echo "$coverage_files" >> $GITHUB_ENV
+            # Store the entire coverage XML content in COVERAGE_REPORT
+            coverage_report=$(< tests/python/coverage.xml)
+            echo "COVERAGE_REPORT<<EOF" >> $GITHUB_ENV
+            echo "$coverage_report" >> $GITHUB_ENV
             echo "EOF" >> $GITHUB_ENV
-            # Extract coverage files from the report (assuming XML format)
-            #coverage_files=$(xmllint --xpath '//class/@filename' tests/python/coverage.xml | tr ' ' '\n')
-            #echo "coverage_files=$coverage_files" >> $GITHUB_ENV
-            echo "hi"
-            echo ${{ env.COVERAGE_FILES }}
-            echo "hi"
           else 
-            echo "failed if statement"
+            echo "Failed to generate coverage report"
             exit 1
           fi
+      - name: Verify coverage report
+        if: env.changed_files != ''
+        run: echo "$COVERAGE_REPORT"
+
       - name: Run test generation script
         if: env.changed_files != ''
         run: python generate_tests.py "${{ env.changed_files }}"
@@ -111,7 +107,7 @@ jobs:
         if: env.CHANGES_PUSHED == '1'
         uses: repo-sync/pull-request@v2
         with:
-          github_token: ${{ secrets.PAT_TOKEN }}  # Use PAT for PR creation
+          github_token: ${{ secrets.PAT_TOKEN }}
           pr_title: "✨ New Test Cases Generated"
           pr_body: |
             ## 🤖 Automated Test Generation
@@ -122,7 +118,7 @@ jobs:
             ```
             Here is a coverage report to help:
             ```
-            ${{ env.COVERAGE_REPORT }}
+            "$COVERAGE_REPORT"
             ```
             
             Please review these generated tests for:
