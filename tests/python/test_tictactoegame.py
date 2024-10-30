@@ -53,7 +53,7 @@ class TestMain(unittest.TestCase):
         assert game5.validate_move(10) == (False, "Move must be between 0 and 8")
         assert game5.validate_move(-1) == (False, "Move must be between 0 and 8")
         assert game5.validate_move(0) == (True, "Valid move")#they haven't made the move yet just checking
-        #assert game5.validate_move(-1) == (False, "Move must be between 0 and 8")
+        assert game5.validate_move(-1) == (False, "Move must be between 0 and 8")
         #assert game5.validate_move(0) == (True, "Valid move")
 
     """def test_print_board(capsys, tic_tac_toe):
