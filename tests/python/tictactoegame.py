@@ -117,6 +117,15 @@ class TicTacToe:
         except FileNotFoundError:
             print(f"No saved game found at {filename}.")
 
+    def print_move_history(self):
+        """Print the history of moves made so far in the game."""
+        if not self.move_history:
+            print("No moves have been made yet.")
+        else:
+            print("Move history:")
+            for move_num, (square, player) in enumerate(self.move_history, 1):
+                print(f"{move_num}. Player {player} moved to square {square}")
+
 def play_game():
     game = TicTacToe()
     print("Welcome to Tic Tac Toe!")
@@ -125,11 +134,13 @@ def play_game():
     print("Enter -3 to get a move suggestion.")
     print("Enter -4 to save the game.")
     print("Enter -5 to load a saved game.")
+    print("Enter -6 to view the move history.")
+
     while True:
         game.print_board()
         try:
             square = int(input(f"Turn for {game.current_player}. Move on which space? (0-{game.board_size*game.board_size - 1}): "))
-            if square == -1:  # Check if the reset command is entered
+            if square == -1:  # Reset the game
                 game.reset_game()
                 continue
             elif square == -2:  # Undo last move
@@ -145,6 +156,10 @@ def play_game():
             elif square == -5:  # Load a saved game
                 game.load_game()
                 continue
+            elif square == -6:  # View move history
+                game.print_move_history()
+                continue
+
             success, msg = game.make_move(square)
             print(msg)
             if success:
