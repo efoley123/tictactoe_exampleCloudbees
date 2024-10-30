@@ -5,6 +5,7 @@ on:
       - main
       - "feature/*"
       - eleanor-br
+      - newAshley-br
     paths:
       - '**.py'
       - '**.js'
@@ -41,29 +42,34 @@ jobs:
         run: |
           changed_files=$(git diff --name-only HEAD^ HEAD | grep -E '\.(py|js|ts|java|cpp|cs)$' || true)
           if [ -n "$changed_files" ]; then
+            #echo "changed_files=$changed_files" >> $GITHUB_ENV
+            changed_files=$(echo "$changed_files" | tr '\n' ',' | sed 's/,$//') # Remove trailing comma, allows 2 files now in here
             echo "changed_files=$changed_files" >> $GITHUB_ENV
             echo "Found changed files: $changed_files"
           else
             echo "No relevant source files changed"
             exit 0
           fi
+      - name: Install libxml2-utils
+        run: sudo apt-get install -y libxml2-utils
 
-      - name: Create coverage_files
+      - name: Create coverage report
         if: env.changed_files != ''
         run: |
-          coverage_files=$(git diff --name-only HEAD^ HEAD | grep -E '\.(py|js|ts|java|cpp|cs)$' || true)
-          if [ -n "$coverage_files" ]; then
-            echo "coverage_files=$coverage_files" >> $GITHUB_ENV
-          else
-            echo "did not create coverage_files"
-            exit 0
+          pytest --cov=tictactoegame --cov-report=xml:tests/python/coverage.xml tests/python/test_tictactoegame.py
+          if [ -f tests/python/coverage.xml ]; then
+            # Store the entire coverage XML content in COVERAGE_REPORT
+            coverage_report=$(< tests/python/coverage.xml)
+            echo "COVERAGE_REPORT<<EOF" >> $GITHUB_ENV
+            echo "$coverage_report" >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+          else 
+            echo "Failed to generate coverage report"
+            exit 1
           fi
-          
-      - name: Adding coverage files
+      - name: Verify coverage report
         if: env.changed_files != ''
-        run: |
-            pytest --cov=tictactoegame --cov-report=term-missing "${{ env.coverage_files }}"    # Generates the coverage report in XML format
-            echo "${{ env.coverage_files }}"
+        run: echo "${{ env.COVERAGE_REPORT }}"
 
       - name: Run test generation script
         if: env.changed_files != ''
@@ -103,7 +109,7 @@ jobs:
         if: env.CHANGES_PUSHED == '1'
         uses: repo-sync/pull-request@v2
         with:
-          github_token: ${{ secrets.PAT_TOKEN }}  # Use PAT for PR creation
+          github_token: ${{ secrets.PAT_TOKEN }}
           pr_title: "✨ New Test Cases Generated"
           pr_body: |
             ## 🤖 Automated Test Generation
@@ -114,7 +120,7 @@ jobs:
             ```
             Here is a coverage report to help:
             ```
-            "${{ env.coverage_files }}"
+            ${{ env.COVERAGE_REPORT }}
             ```
             
             Please review these generated tests for:
