@@ -31,8 +31,12 @@ class TicTacToe:
             self.current_winner = self.current_player
             self.scores[self.current_player] += 1  # Update score for the winner
             return True, "Player {} wins!".format(self.current_player)
-        self.current_player = 'O' if self.current_player == 'X' else 'X'
+        self.toggle_player()  # Use the new toggle_player function
         return True, "Move successful"
+
+    def toggle_player(self):
+        """Switch the current player from 'X' to 'O' or vice versa."""
+        self.current_player = 'O' if self.current_player == 'X' else 'X'
 
     def undo_move(self):
         """Undo the last move made, if any."""
@@ -67,11 +71,6 @@ class TicTacToe:
 
     def is_board_full(self):
         return ' ' not in self.board
-    
-    def switch_starting_player(self):
-        """Switch the starting player between 'X' and 'O'."""
-        self.current_player = 'O' if self.current_player == 'X' else 'X'
-        print(f"The starting player is now {self.current_player}.")
 
     def reset_game(self):
         self.board = [' ' for _ in range(self.board_size * self.board_size)]
@@ -96,26 +95,6 @@ class TicTacToe:
             print(f"Suggested move for {self.current_player}: {suggestion}")
             return suggestion
         return None
-    
-    def get_remaining_moves_count(self):
-        """Return the number of moves left on the board."""
-        remaining_moves = self.board.count(' ')
-        print(f"Remaining moves: {remaining_moves}")
-        return remaining_moves
-
-    def get_game_summary(self):
-        """Return a summary of the current game status, including board state, current player, and scores."""
-        board_lines = "\n".join(
-            "| " + " | ".join(self.board[i:i + self.board_size]) + " |"
-            for i in range(0, self.board_size * self.board_size, self.board_size)
-        )
-        summary = (
-            f"Current Board:\n{board_lines}\n"
-            f"Current Player: {self.current_player}\n"
-            f"Scores: X - {self.scores['X']}, O - {self.scores['O']}, Draws - {self.scores['Draws']}"
-        )
-        print(summary)
-        return summary
 
     def save_game(self, filename="tictactoe_save.json"):
         """Save the current game state to a file."""
@@ -142,14 +121,26 @@ class TicTacToe:
         except FileNotFoundError:
             print(f"No saved game found at {filename}.")
 
-    def change_player(self):
-        """Change the current player manually."""
-        if self.current_player == 'X':
-            self.current_player = 'O'
-        else:
-            self.current_player = 'X'
-        print(f"The current player is now {self.current_player}.")
-    
+    def get_game_summary(self):
+        """Return a summary of the current game status, including board state, current player, and scores."""
+        board_lines = "\n".join(
+            "| " + " | ".join(self.board[i:i + self.board_size]) + " |"
+            for i in range(0, self.board_size * self.board_size, self.board_size)
+        )
+        summary = (
+            f"Current Board:\n{board_lines}\n"
+            f"Current Player: {self.current_player}\n"
+            f"Scores: X - {self.scores['X']}, O - {self.scores['O']}, Draws - {self.scores['Draws']}"
+        )
+        print(summary)
+        return summary
+
+    def get_remaining_moves_count(self):
+        """Return the number of moves left on the board."""
+        remaining_moves = self.board.count(' ')
+        print(f"Remaining moves: {remaining_moves}")
+        return remaining_moves
+
     def current_player_symbol(self):
         """Return the symbol of the current player."""
         return self.current_player
@@ -157,56 +148,59 @@ class TicTacToe:
 
 def play_game():
     game = TicTacToe()
-    print("New game :)")
+    print("new game :)")
     print("Welcome to Tic Tac Toe!")
     print("Enter -1 at any time to reset the game.")
     print("Enter -2 to undo the last move.")
     print("Enter -3 to get a move suggestion.")
     print("Enter -4 to save the game.")
     print("Enter -5 to load a saved game.")
-    print("Enter -6 to change the current player.")  # New command
-
+    print("Enter -6 to see the game summary.")
+    print("Enter -7 to see remaining moves.")
     while True:
         game.print_board()
-        print(f"Current player symbol: {game.current_player_symbol()}")
+        print(f"Current player symbol: {game.current_player_symbol()}")  # Display current player symbol
         try:
-            square = int(input(f"Turn for {game.current_player}. Move on which space? (0-{game.board_size * game.board_size - 1}): "))
-            if square == -1:  # Reset the game
+            square = int(input(f"Turn for {game.current_player}. Move on which space? (0-{game.board_size*game.board_size - 1}): "))
+            if square == -1:
                 game.reset_game()
                 continue
-            elif square == -2:  # Undo last move
+            elif square == -2:
                 success, msg = game.undo_move()
                 print(msg)
                 continue
-            elif square == -3:  # Suggest a move
+            elif square == -3:
                 game.suggest_move()
                 continue
-            elif square == -4:  # Save the game
+            elif square == -4:
                 game.save_game()
                 continue
-            elif square == -5:  # Load a saved game
+            elif square == -5:
                 game.load_game()
                 continue
-            elif square == -6:  # Change current player
-                game.change_player()
+            elif square == -6:
+                game.get_game_summary()
                 continue
-            
+            elif square == -7:
+                game.get_remaining_moves_count()
+                continue
             success, msg = game.make_move(square)
             print(msg)
             if success:
                 if msg.startswith("Player"):
                     print("Game Over")
-                    game.print_board()  # Show the final board
-                    game.print_scores()  # Print scores after game ends
+                    game.print_board()
+                    game.print_scores()
                     break
                 elif game.is_board_full():
                     print("It's a tie!")
-                    game.scores['Draws'] += 1  # Update score for a draw
-                    game.print_board()  # Show the final board
-                    game.print_scores()  # Print scores after game ends
+                    game.scores['Draws'] += 1
+                    game.print_board()
+                    game.print_scores()
                     break
         except ValueError:
             print("Please enter a valid number.")
+
 
 if __name__ == '__main__':
     play_game()

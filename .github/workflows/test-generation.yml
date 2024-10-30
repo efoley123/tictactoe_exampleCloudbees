@@ -59,14 +59,14 @@ jobs:
           pytest --cov=tictactoegame --cov-report=xml:tests/python/coverage.xml "tests/python/test_tictactoegame.py"
 
           # Read the coverage report into a variable
-          if [ -f coverage.xml]; then
-            coverage_report=$(< coverage.xml)
+          if [ -f tests/python/coverage.xml]; then
+            coverage_report=$(< tests/python/coverage.xml)
             echo "COVERAGE_REPORT<<EOF" >> $GITHUB_ENV
             echo "$coverage_report" >> $GITHUB_ENV
             echo "EOF" >> $GITHUB_ENV
 
             # Extract coverage files from the report (assuming XML format)
-            coverage_files=$(xmllint --xpath '//file/@name' coverage.xml | tr ' ' '\n' | grep -E '\.(py|js|ts|java|cpp|cs)$')
+            coverage_files=$(xmllint --xpath '//file/@name' tests/python/coverage.xml | tr ' ' '\n' | grep -E '\.(py|js|ts|java|cpp|cs)$')
             echo "coverage_files=$coverage_files" >> $GITHUB_ENV
           else 
             echo "Did not create coverage.xml"
