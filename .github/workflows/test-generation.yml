@@ -5,6 +5,7 @@ on:
       - main
       - "feature/*"
       - eleanor-br
+      - newAshley-br
     paths:
       - '**.py'
       - '**.js'
@@ -48,23 +49,27 @@ jobs:
             exit 0
           fi
 
-      - name: Create coverage_files
-        if: env.changed_files != ''
-        run: |
-          coverage_files=$(git diff --name-only HEAD^ HEAD | grep -E '\.(py|js|ts|java|cpp|cs)$' || true)
-          if [ -n "$coverage_files" ]; then
-            echo "coverage_files=$coverage_files" >> $GITHUB_ENV
-          else
-            echo "did not create coverage_files"
-            exit 0
-          fi
-          
-      - name: Adding coverage files
-        if: env.changed_files != ''
-        run: |
-            pytest --cov=tictactoegame --cov-report=term-missing "${{ env.coverage_files }}"    # Generates the coverage report in XML format
-            echo "${{ env.coverage_files }}"
+      - name: Install libxml2-utils
+        run: sudo apt-get install -y libxml2-utils
 
+      - name: Create coverage report
+        if: env.changed_files != ''
+        run: |
+          # Generate coverage report in XML format
+          pytest --cov=tictactoegame --cov-report=xml:tests/python/coverage.xml "tests/python/test_tictactoegame.py"
+          # Read the coverage report into a variable
+          if [ -f tests/python/coverage.xml ]; then
+            coverage_report=$(< tests/python/coverage.xml)
+            echo "COVERAGE_REPORT<<EOF" >> $GITHUB_ENV
+            echo "$coverage_report" >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+            # Extract coverage files from the report (assuming XML format)
+            coverage_files=$(xmllint --xpath '//class/@filename' tests/python/coverage.xml | tr ' ' '\n')
+            echo "coverage_files=$coverage_files" >> $GITHUB_ENV
+          else 
+            echo "failed if statement"
+            exit 1
+          fi
       - name: Run test generation script
         if: env.changed_files != ''
         run: python generate_tests.py "${{ env.changed_files }}"
@@ -114,7 +119,7 @@ jobs:
             ```
             Here is a coverage report to help:
             ```
-            "${{ env.coverage_files }}"
+            ${{ env.COVERAGE_REPORT }}
             ```
             
             Please review these generated tests for:
