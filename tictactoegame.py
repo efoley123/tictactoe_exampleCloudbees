@@ -11,6 +11,7 @@ class TicTacToe:
         self.current_player = 'X'
 
     def players(self): #added this function here
+        
         return self.current_player
 
     def print_board(self):
@@ -131,6 +132,7 @@ class TicTacToe:
 
 def play_game():
     game = TicTacToe()
+    print("HIIII")
     print("Welcome to Tic Tac Toe!")
     print("Enter -1 at any time to reset the game.")
     print("Enter -2 to undo the last move.")

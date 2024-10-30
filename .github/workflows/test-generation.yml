@@ -5,7 +5,7 @@ on:
       - main
       - "feature/*"
       - eleanor-br
-      
+      - newAshley-br
     paths:
       - '**.py'
       - '**.js'
@@ -73,6 +73,8 @@ jobs:
       - name: Commit and push changes
         if: env.changed_files != ''
         run: |
+          echo "Git status output:"
+          git status
           if [ -n "$(git status --porcelain)" ]; then
             git checkout -b ${{ env.BRANCH_NAME }}
             git add tests/
