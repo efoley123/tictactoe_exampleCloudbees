@@ -74,7 +74,8 @@ jobs:
         if: env.changed_files != ''
         run: |
           echo "Git status --porcelain output:"
-          echo git status --porcelain
+          git_status=$(git status --porcelain)
+          echo "$git_status"
           echo "end of git status --porcelian"
           if [ -n "$(git status --porcelain)" ]; then
             git checkout -b ${{ env.BRANCH_NAME }}
