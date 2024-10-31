@@ -2,7 +2,7 @@ import unittest
 
 import sys
 import os
-from tictactoegame import TicTacToe
+from tests.python.tictactoegame import TicTacToe
 
 class TestMain(unittest.TestCase):
     def test_tic_tac_toe(self):
