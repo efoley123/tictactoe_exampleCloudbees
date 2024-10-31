@@ -94,8 +94,14 @@ Generate only the test code without any explanations."""
         data = {
             'model': self.model,
             'messages': [
-                {"role": "system", "content": "You are a senior software engineer specialized in writing comprehensive test suites."},
-                {"role": "user", "content": prompt}
+                {
+                    "role": "system",
+                    "content": "You are a senior software engineer specialized in writing comprehensive test suites."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
             ],
             'max_tokens': self.max_tokens,
             'temperature': 0.7  # Balance between creativity and consistency
@@ -109,10 +115,33 @@ Generate only the test code without any explanations."""
                 timeout=30
             )
             response.raise_for_status()
-            return response.json()['choices'][0]['message']['content']
+            generated_text = response.json()['choices'][0]['message']['content']
+
+            # Replace curly quotes with straight quotes
+            normalized_text = generated_text.replace('“', '"').replace('”', '"').replace("‘", "'").replace("’", "'")
+
+            # Remove markdown code blocks if present
+            if normalized_text.startswith('```'):
+                # Find the index of the first newline after ```
+                first_newline_index = normalized_text.find('\n', 3)
+                if first_newline_index != -1:
+                    # Remove the ``` and language identifier line
+                    normalized_text = normalized_text[first_newline_index+1:]
+                else:
+                    # If there's no newline, remove the first line
+                    normalized_text = normalized_text[3:]
+                # Remove the ending ```
+                if normalized_text.endswith('```'):
+                    normalized_text = normalized_text[:-3]
+
+            # Strip any leading/trailing whitespace
+            normalized_text = normalized_text.strip()
+
+            return normalized_text
         except RequestException as e:
             logging.error(f"API request failed: {e}")
             return None
+
 
     def save_test_cases(self, file_name: str, test_cases: str, language: str):
         """Save generated test cases to appropriate directory structure."""
@@ -130,7 +159,7 @@ Generate only the test code without any explanations."""
         test_file = lang_dir / f"test_{base_name}{extension}"
 
         try:
-            with open(test_file, 'w') as f:
+            with open(test_file, 'w', encoding='utf-8') as f:
                 f.write(test_cases)
             logging.info(f"Test cases saved to {test_file}")
         except Exception as e:
@@ -154,13 +183,18 @@ Generate only the test code without any explanations."""
                 prompt = self.create_prompt(file_name, language)
                 
                 if prompt:
+                    # Generate test cases from the API
                     test_cases = self.call_openai_api(prompt)
+                    
+                    # Clean up quotation marks if test cases were generated
                     if test_cases:
+                        test_cases = test_cases.replace("“", '"').replace("”", '"')
                         self.save_test_cases(file_name, test_cases, language)
                     else:
                         logging.error(f"Failed to generate test cases for {file_name}")
             except Exception as e:
                 logging.error(f"Error processing {file_name}: {e}")
+
 
 if __name__ == '__main__':
     try:
