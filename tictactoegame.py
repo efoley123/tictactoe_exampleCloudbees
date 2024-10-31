@@ -21,6 +21,12 @@ class TicTacToe:
             return False, "Square already occupied"
         return True, "Valid move"
     
+    def games_played(self):
+        """Display the total number of games played so far."""
+        total_games = self.scores['X'] + self.scores['O'] + self.scores['Draws']
+        print(f"Total games played: {total_games}")
+        print(f"Wins - X: {self.scores['X']}, O: {self.scores['O']}, Draws: {self.scores['Draws']}")
+    
     def swap_players(self):
         """Switch the starting player for the next game."""
         self.current_player = 'O' if self.current_player == 'X' else 'X'

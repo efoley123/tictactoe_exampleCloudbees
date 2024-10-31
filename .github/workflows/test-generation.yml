@@ -73,7 +73,7 @@ jobs:
 
       - name: Run test generation script
         if: env.changed_files != ''
-        run: python generate_tests.py "${{ env.changed_files }}"
+        run: python generate_tests.py "${{ env.changed_files }}" "${{ env.COVERAGE_REPORT }}"
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}

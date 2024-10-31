@@ -28,6 +28,12 @@ class TestGenerator:
             return []
         return [f.strip() for f in sys.argv[1].split() if f.strip()]
 
+    def get_coverage_report(self) -> str:
+        """Retrieve coverage report passed as command-line argument."""
+        if len(sys.argv) <= 2:
+            return ""
+        return sys.argv[2]
+
     def detect_language(self, file_name: str) -> str:
         """Detect programming language based on file extension."""
         extensions = {
@@ -35,7 +41,7 @@ class TestGenerator:
             '.js': 'JavaScript',
             '.ts': 'TypeScript',
             '.java': 'Java',
-            '.cpp':'C++',
+            '.cpp': 'C++',
             '.cs': 'C#'
         }
         _, ext = os.path.splitext(file_name)
@@ -53,8 +59,8 @@ class TestGenerator:
         }
         return frameworks.get(language, 'unknown')
 
-    def create_prompt(self, file_name: str, language: str) -> Optional[str]:
-        """Create a language-specific prompt for test generation."""
+    def create_prompt(self, file_name: str, language: str, coverage_report: str) -> Optional[str]:
+        """Create a language-specific prompt for test generation including the coverage report."""
         try:
             with open(file_name, 'r') as f:
                 code_content = f.read()
@@ -78,6 +84,10 @@ Requirements:
 Code to test:
 
 {code_content}
+
+Coverage report:
+
+{coverage_report}
 
 Generate only the test code without any explanations."""
 
@@ -139,6 +149,8 @@ Generate only the test code without any explanations."""
     def run(self):
         """Main execution method."""
         changed_files = self.get_changed_files()
+        coverage_report = self.get_coverage_report()
+        
         if not changed_files:
             logging.info("No files changed.")
             return
@@ -151,7 +163,7 @@ Generate only the test code without any explanations."""
                     continue
 
                 logging.info(f"Processing {file_name} ({language})")
-                prompt = self.create_prompt(file_name, language)
+                prompt = self.create_prompt(file_name, language, coverage_report)
                 
                 if prompt:
                     test_cases = self.call_openai_api(prompt)
